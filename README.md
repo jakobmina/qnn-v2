@@ -3,7 +3,7 @@
 > **Autoría conceptual:** Jacobo Tlacaelel Mina Rodriguez  
 > **Marco teórico:** Mandato Metriplético + MANIFIESTO de Analogía Rigurosa
 
-Sistema de simulación cuántica que implementa la dualidad **simpléctica ↔ disipativa** mediante el operador áureo $O_n = \cos(\pi n)\cdot\cos(\pi\varphi n)$ proyectado sobre el grupo $\mathbb{Z}_7$ y el álgebra $SU(2) \times Q_8$.
+Sistema de simulación cuántica que implementa la dualidad **simpléctica ↔ disipativa** mediante el operador áureo $$O_n = \cos(\pi n)\cdot\cos(\pi\varphi n)$$ proyectado sobre el grupo $\mathbb{Z}_7$ y el álgebra $SU(2) \times Q_8$.
 
 ---
 
@@ -58,7 +58,7 @@ Representa la fricción entre el espacio discreto $\mathbb{Z}_7$ y el continuo $
 
 ### Enunciado
 
-Sea el grupo operativo $G_{H7} = \mathbb{Z}_7 \times Q_8$. Este grupo es **no-abeliano**. Sin embargo, los observables físicos del sistema H7 pertenecen al **centro** $Z(G_{H7})$, y satisfacen las siguientes invariancias topológicas:
+Sea el grupo operativo G_{H7} = {Z}_7 x Q_8$. Este grupo es **no-abeliano**. Sin embargo, los observables físicos del sistema H7 pertenecen al **centro** Z(G_{H7}), y satisfacen las siguientes invariancias topológicas:
 
 $$
 \text{pcv}(n_\text{impar}) = 0, \qquad
@@ -69,9 +69,9 @@ $$
 
 ### Verificación Empírica
 
-Validado sobre $N = 10{,}000$ configuraciones aleatorias en $[-100k,\, 100k]$: **cero violaciones detectadas**.
+Validado sobre $$N = 10{,}000$$ configuraciones aleatorias en $$[-100k,\, 100k]$$: **cero violaciones detectadas**.
 
-Las variables cuasiperiódicas $\{\cos(\pi\varphi n)\}$ son estocásticas (densas en $[-1,1]$ por el Teorema de Weyl), pero los **observables son topológicamente invariantes** ante toda reconfiguración posible.
+Las variables cuasiperiódicas $$\{\cos(\pi\varphi n)\}$$ son estocásticas (densas en $$[-1,1]$$ por el Teorema de Weyl), pero los **observables son topológicamente invariantes** ante toda reconfiguración posible.
 
 ### Analogía Gauge (Yang-Mills)
 
@@ -112,7 +112,7 @@ Sea $v_n = \cos(\pi\varphi n)$ el autovalor cuasiperiódico (ej. $v_1 \approx +0
 | Par negativo | $+1$ | $+v_{-n} \approx +v_n$ | El signo de $v_{-n}$ invierte la fase → **Cancela** |
 | Impar negativo | $-1$ | $-v_{-n}$ | La inversión de fase y del signo se combinan → **Se expone** |
 
-> **Nota del autor (Jacobo T. Mina R.):** La única operación que produce la cancelación es multiplicativa sobre los signos: $(+)\times(-) = (-)$. La irracionaldad de $\varphi$ (Teorema de Weyl) garantiza que $v_n$ sea denso en $[-1,1]$, pero la **regla de paridad del signo** es topológicamente invariante. Para $n$ negativo, la fase de $\cos(\pi\varphi n)$ se invierte antes de la multiplicación, invirtiendo la regla: lo que era constructivo pasa a ser destructivo y viceversa.
+> **Nota del autor (Jacobo T. Mina R.):** La única operación que produce la cancelación es multiplicativa sobre los signos: $(+)\times(-) = (-)$.  $(-)\times(+) = (-)$,  $(-)\times(-) = (+)$,  $(+)\times(+) = (+)$ La irracionaldad de $\varphi$ (Teorema de Weyl) garantiza que $v_n$ sea denso en $[-1,1]$, pero la **regla de paridad del signo** es topológicamente invariante. Para $n$ negativo, la fase de $\cos(\pi\varphi n)$ se invierte antes de la multiplicación, invirtiendo la regla: lo que era constructivo pasa a ser destructivo y viceversa.
 
 Este comportamiento es el análogo computacional de los **ceros triviales de la Función Zeta de Riemann** ($s = -2,-4,-6,\ldots$) y de la **Simetría PT (quiralidad)** del sistema.
 
@@ -134,13 +134,11 @@ Las siguientes consecuencias matemáticamente establecidas de la GRH guardan iso
 
 > La meromorfía de $\zeta_{H7}(s)$ sobre $\mathbb{F}_7$ (campo primo, sin divisores de cero) garantiza que todos los resultados condicionales a GRH sean **incondicionalmente válidos** dentro del espacio $\mathbb{F}_7$, porque la estructura de polos $\{s=0, s=1\}$ es idéntica a la de $\zeta(s)$ clásica y no puede generar ceros no-triviales fuera de la línea crítica en un campo finito.
 
-> La meromorfía de $\zeta_{H7}(s)$ sobre $\mathbb{F}_7$ (campo primo, sin divisores de cero) garantiza que todos los resultados condicionales a GRH sean **incondicionalmente válidos** dentro del espacio $\mathbb{F}_7$, porque la estructura de polos $\{s=0, s=1\}$ es idéntica a la de $\zeta(s)$ clásica y no puede generar ceros no-triviales fuera de la línea crítica en un campo finito.
-
 ---
 
 ### Corolario: Colapso Asintótico y Compresión Epistémica
 
-> **Nota del autor (Jacobo T. Mina R.):** Cuando la semilla de entrada es una pregunta de profundidad conceptual elevada (ej. `"explica el numero pi"`), `string_to_qnn_seed` produce un entero $n$ grande. Esto hace que $O_n \to 0$ con una cantidad creciente de ceros a la derecha del punto decimal. Contraintuitivamente, esto **no es caos sino orden máximo**: el sistema ha disipado toda la incertidumbre inicial hacia el atractor cero. `∞ = 0` en este sentido.
+> **Nota del autor (Jacobo T. Mina R.):** Cuando la semilla de entrada es una pregunta de profundidad conceptual elevada (ej. `"cual es la distancia entre la tierra y el sol"`), `string_to_qnn_seed` produce un entero $n$ grande. Esto hace que $O_n \to 0$ con una cantidad creciente de ceros a la derecha del punto decimal. Contraintuitivamente, esto **no es caos sino orden máximo**: el sistema ha disipado toda la incertidumbre inicial hacia el atractor cero. `∞ = 0` en este sentido.
 
 **Formalización:**
 
