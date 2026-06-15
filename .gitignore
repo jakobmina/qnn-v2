@@ -1,0 +1,153 @@
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+
+# Entornos virtuales
+.env/
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# pytest
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+nosetests.xml
+pytest.xml
+
+# mypy / type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# ─── C / C++ ──────────────────────────────────────────────────────────────────
+# Binarios compilados
+h7_loader
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+
+# Archivos de debug
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# ─── Salidas del pipeline (his-torial/) ───────────────────────────────────────
+# Mantener la carpeta his-torial/ pero ignorar su contenido generado
+his-torial/*.bin
+his-torial/*.json
+
+# Mantener el directorio rastreado con .gitkeep
+!his-torial/.gitkeep
+
+# ─── Estados cuánticos en la raíz (legados) ──────────────────────────────────
+h7_state_*.bin
+h7_state_*.json
+
+# ─── IDEs y editores ──────────────────────────────────────────────────────────
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains (PyCharm, CLion, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Emacs
+\#*\#
+.\#*
+*.elc
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ─── Sistema operativo ────────────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+.directory
+.Trash-*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ─── Qiskit / simulación cuántica ────────────────────────────────────────────
+# Caché de transpilación de Qiskit
+*.qasm
+qiskit_cache/
+
+# ─── Logs y temporales ───────────────────────────────────────────────────────
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*.patch
+
+# ─── Distribución / packaging Python ─────────────────────────────────────────
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+*.egg-info/
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ─── Secrets y configuración local ───────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+secrets.json
+config.local.*

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metriplectic Quantum Hash UI</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Fira+Code&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-anim"></div>
+    <div class="container">
+        <header>
+            <h1>Metriplectic <span class="accent">Quantum Hash</span></h1>
+            <p>Autómata Celular Cuántico Autosustentado</p>
+        </header>
+
+        <main>
+            <div class="control-panel glass">
+                <div class="input-group">
+                    <label for="seed">Input / Semilla (Texto o Número)</label>
+                    <input type="text" id="seed" placeholder="e.g. 8 or 'Hola'">
+                </div>
+                <div class="input-group">
+                    <label for="iterations">Iteraciones de Hashing</label>
+                    <input type="number" id="iterations" value="3" min="1" max="10">
+                </div>
+                <button id="btn-hash" class="btn-glow">Generar Hash</button>
+            </div>
+
+            <div id="loader" class="loader hidden">
+                <div class="spinner"></div>
+                <p>Calculando Covarianza y Torsión...</p>
+            </div>
+
+            <div id="results" class="results-panel hidden">
+                <div class="hash-display glass">
+                    <h2>Hash Final (MetriplecticState)</h2>
+                    <div class="metrics">
+                        <div class="metric">
+                            <span class="label">Campo Ψ (Psi)</span>
+                            <span class="value" id="out-psi">0.0</span>
+                        </div>
+                        <div class="metric">
+                            <span class="label">Energía (H)</span>
+                            <span class="value" id="out-energy">0.0</span>
+                        </div>
+                        <div class="metric">
+                            <span class="label">Torsión (S)</span>
+                            <span class="value accent" id="out-torsion">0.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-panel glass">
+                    <h3>Trayectoria del Autómata</h3>
+                    <div id="history-container" class="timeline"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="/static/app.js"></script>
+</body>
+</html>
