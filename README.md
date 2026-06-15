@@ -1,4 +1,4 @@
-# QNN-v2 — Quantum Neural Network Metripléctica H7
+# QNN-v2 — Quantum Neural Network Metriplex H7
 
 > **Autoría conceptual:** Jacobo Tlacaelel Mina Rodriguez  
 > **Marco teórico:** Mandato Metriplético + MANIFIESTO de Analogía Rigurosa
@@ -197,7 +197,7 @@ python3 h7_main.py
 
 ```bash
 python3 h7_main.py
-# Insert n value or character: A
+# Insert n value or character: A # Se puede introducir texto con preguntas abiertas, para demostración
 ```
 
 ### Leer un estado exportado desde C
