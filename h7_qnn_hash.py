@@ -17,6 +17,10 @@ from utf8_qnn_poc import string_to_qnn_seed
 pi, phi = np.pi, (1 + math.sqrt(5)) / 2
 simulator = AerSimulator()
 
+# Singleton: reutilizar un solo Sampler evita crear N instancias pesadas en
+# paralelo cuando procesar_batch() ejecuta múltiples threads simultáneamente.
+_sampler = StatevectorSampler()
+
 def get_su2_matrix(k, angle_moment, mode='dynamic'):
     if mode == 'dynamic':
         theta_rot = angle_moment * (pi / 4)
@@ -29,7 +33,7 @@ def get_su2_matrix(k, angle_moment, mode='dynamic'):
         w, x, y, z = math.cos(half), 0.0, 0.0, math.sin(half)
     return np.array([[w + 1j*z, y + 1j*x], [-y + 1j*x, w - 1j*z]], dtype=complex)
 
-def run_qnn_step(n, iteration):
+def run_qnn_step(n, iteration, shots: int = 512):
     n_z7 = 7 if (n % 7 == 0 and n != 0) else (n % 7)
     c_nz7 = 7 - n_z7
     
@@ -51,8 +55,8 @@ def run_qnn_step(n, iteration):
     qc_final.ccx(1, 0, 2)
     qc_final.measure_all()
 
-    sampler = StatevectorSampler()
-    job = sampler.run([qc_final], shots=1024)
+    # Reutilizar el singleton global: no instanciar por cada token/iteración.
+    job = _sampler.run([qc_final], shots=shots)
     result = job.result()
     counts = result[0].data.meas.get_counts()
     
@@ -76,14 +80,14 @@ def run_qnn_step(n, iteration):
         "su2": su2_original
     }
 
-def generate_metriplectic_hash(seed, iterations=3):
+def generate_metriplectic_hash(seed, iterations=3, shots: int = 512):
     learning_rate = 1000  # Multiplicador termodinámico
     current_n = seed
     
     history = []
     
     for i in range(iterations):
-        step_data = run_qnn_step(current_n, i)
+        step_data = run_qnn_step(current_n, i, shots=shots)
         cov = step_data["covariance"]
         
         delta_n = int(cov * learning_rate * phi) 
@@ -102,7 +106,7 @@ def generate_metriplectic_hash(seed, iterations=3):
         current_n = next_n
 
     # Final Hash via Bridge C
-    final_step = run_qnn_step(current_n, iterations)
+    final_step = run_qnn_step(current_n, iterations, shots=shots)
     dummy_sv = np.array([1, 0]) 
     
     bridge_out = run_h7_bridge(

@@ -24,6 +24,12 @@ import json
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+try:
+    import psutil
+    _HAS_PSUTIL = True
+except ImportError:
+    _HAS_PSUTIL = False
+
 from h7_qnn_hash import generate_metriplectic_hash
 from utf8_qnn_poc import string_to_qnn_seed
 
@@ -32,6 +38,24 @@ OLLAMA_MODEL = "llama3.2:latest"
 
 # Cota teórica de covarianza para 2 qubits: Cov(A,B) ∈ [-1/4, 1/4]
 COV_MIN, COV_MAX = -0.25, 0.25
+
+# Shots reducidos para batch mode: 512 es suficiente para estimar covarianza
+# con error estándar < 0.02, y reduce RAM ~2x vs 1024 shots por circuito.
+BATCH_SHOTS = 512
+
+
+def _safe_max_workers(requested: int) -> int:
+    """
+    Limita max_workers según RAM libre para evitar OOM.
+    Cada circuito Qiskit-Aer ocupa ~150-300 MB en RAM al simular.
+    Usamos RAM_POR_WORKER=200 MB como estimación conservadora.
+    """
+    if not _HAS_PSUTIL:
+        return min(requested, 4)  # sin psutil, limite conservador
+    RAM_POR_WORKER_MB = 200
+    ram_libre_mb = psutil.virtual_memory().available / (1024 ** 2)
+    workers_por_ram = max(1, int(ram_libre_mb / RAM_POR_WORKER_MB))
+    return min(requested, workers_por_ram)
 
 
 # ── Tokenización ─────────────────────────────────────────────
@@ -46,7 +70,7 @@ def tokenizar(texto: str) -> list[str]:
 
 
 # ── QNN por token (paralelizable) ───────────────────────────
-def procesar_token(token: str, idx: int) -> dict:
+def procesar_token(token: str, idx: int, shots: int = BATCH_SHOTS) -> dict:
     try:
         seed_n = int(token)
     except ValueError:
@@ -55,7 +79,7 @@ def procesar_token(token: str, idx: int) -> dict:
     if seed_n == 0:
         seed_n = 1  # evitar semilla nula
 
-    qnn_result = generate_metriplectic_hash(seed_n, iterations=3)
+    qnn_result = generate_metriplectic_hash(seed_n, iterations=3, shots=shots)
     final_cov = qnn_result["history"][-1]["covariance"]
 
     return {
@@ -69,11 +93,13 @@ def procesar_token(token: str, idx: int) -> dict:
     }
 
 
-def procesar_batch(tokens: list[str], max_workers: int = 8) -> list[dict]:
+def procesar_batch(tokens: list[str], max_workers: int = 4) -> list[dict]:
     """Corre QNN para cada token en paralelo (la QNN libera el GIL en
-    las llamadas a Qiskit/numpy, así que threads sí ayudan aquí)."""
+    las llamadas a Qiskit/numpy, así que threads sí ayudan aquí).
+    max_workers se limita dinámicamente por RAM disponible para evitar OOM."""
+    safe_workers = _safe_max_workers(max_workers)
     resultados = [None] * len(tokens)
-    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+    with ThreadPoolExecutor(max_workers=safe_workers) as ex:
         futuros = {ex.submit(procesar_token, tok, i): i
                    for i, tok in enumerate(tokens)}
         for fut in as_completed(futuros):
@@ -204,8 +230,10 @@ def run_batch_inference(seed_text: str, num_nodos: int = 8, verbose: bool = True
     n = len(tokens)
 
     if verbose:
+        safe_w = _safe_max_workers(num_nodos)
         print(f"\n[+] Tokenizado: {n} tokens detectados.")
-        print(f"[+] Procesando QNN por token (paralelo, {num_nodos} workers)...")
+        print(f"[+] Procesando QNN por token (paralelo, {safe_w}/{num_nodos} workers, "
+              f"{BATCH_SHOTS} shots por circuito)...")
 
     batch = procesar_batch(tokens, max_workers=num_nodos)
 
@@ -229,18 +257,21 @@ def run_batch_inference(seed_text: str, num_nodos: int = 8, verbose: bool = True
 
 
 if __name__ == "__main__":
+    import sys as _sys
+    # Detectar si hay datos en stdin (pipe/redirección) o si es interactivo
+    _is_tty = _sys.stdin.isatty()
+
     print("=== H7 QNN Batch + NodeSort + Ollama ===")
-    print("Pega tu plantilla de código o texto largo (línea vacía para terminar):\n")
-    lineas = []
-    while True:
-        try:
-            linea = input()
-        except EOFError:
-            break
-        if linea == "":
-            break
-        lineas.append(linea)
-    texto_completo = "\n".join(lineas)
+    if _is_tty:
+        print("Pega tu plantilla de código o texto largo.")
+        print("Termina con Ctrl+D (EOF) para procesar — las líneas vacías")
+        print("dentro del código son válidas y NO interrumpen la lectura:\n")
+    else:
+        print("[stdin] Leyendo desde pipe/redirección...\n")
+
+    # sys.stdin.read() lee TODO hasta EOF (Ctrl+D o fin de pipe).
+    # Esto permite pegar código Python completo con líneas vacías entre bloques.
+    texto_completo = _sys.stdin.read()
 
     if texto_completo.strip():
         run_batch_inference(texto_completo)
